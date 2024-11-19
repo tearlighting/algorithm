@@ -1,2 +1,3 @@
 // console.log(123);
-import './linearDataStructure'
+// import './linearDataStructure'
+import "./twoDimensionalDataStructure"
