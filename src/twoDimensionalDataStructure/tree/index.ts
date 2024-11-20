@@ -4,15 +4,15 @@ interface IBinaryTree<T> {
   right: IBinaryTree<T> | null
 }
 
-enum EDiffType{
-	change = "change",
-	add = "add",
-	delete = "delete"
+enum EDiffType {
+  change = "change",
+  add = "add",
+  delete = "delete",
 }
-interface IBinaryTreeDiffItem{
-	 type:EDiffType,
-	 newTree:IBinaryTree<any>,
-	 oldTree:IBinaryTree<any>
+interface IBinaryTreeDiffItem {
+  type: EDiffType
+  newTree: IBinaryTree<any>
+  oldTree: IBinaryTree<any>
 }
 
 class BinaryTree<T> implements IBinaryTree<T> {
@@ -125,30 +125,72 @@ class BinaryTree<T> implements IBinaryTree<T> {
   }
   /**
    * 判断两棵树是否相同
-   * @param tree1 
-   * @param tree2 
-   * @returns 
+   * @param tree1
+   * @param tree2
+   * @returns
    */
-  static diff1<T>(tree1:IBinaryTree<T>,tree2:IBinaryTree<T>):boolean{
-	if(tree1===tree2) return true
-	if((!tree1 && tree2) || (!tree2 && tree1)) return false
-	return tree1.value === tree2.value && BinaryTree.diff1(tree1.left,tree2.left) && BinaryTree.diff1(tree1.right,tree2.right)
+  static diff1<T>(tree1: IBinaryTree<T>, tree2: IBinaryTree<T>): boolean {
+    if (tree1 === tree2) return true
+    if ((!tree1 && tree2) || (!tree2 && tree1)) return false
+    return tree1.value === tree2.value && BinaryTree.diff1(tree1.left, tree2.left) && BinaryTree.diff1(tree1.right, tree2.right)
   }
 
-  static diff<T>(tree1:IBinaryTree<T>,tree2:IBinaryTree<T>):Array<IBinaryTreeDiffItem>{
-	 const res:Array<IBinaryTreeDiffItem> = []
-     if(tree1 === tree2) return res
-	 if(tree1 && !tree2){
-		 res.push({type:EDiffType.delete,oldTree: tree1,newTree: tree2})
-	 }else if(!tree1 && tree2){
-		res.push({type:EDiffType.add,oldTree:tree1,newTree: tree2})
-	 }else{
-        if(tree1.value!==tree2.value){
-			res.push({type:EDiffType.change,oldTree: tree1,newTree:tree2})
-		}
-		res.push(...BinaryTree.diff(tree1.left,tree2.left),...BinaryTree.diff(tree1.right,tree2.right))
-	 }
-	 return res
+  static diff<T>(tree1: IBinaryTree<T>, tree2: IBinaryTree<T>): Array<IBinaryTreeDiffItem> {
+    const res: Array<IBinaryTreeDiffItem> = []
+    if (tree1 === tree2) return res
+    if (tree1 && !tree2) {
+      res.push({ type: EDiffType.delete, oldTree: tree1, newTree: tree2 })
+    } else if (!tree1 && tree2) {
+      res.push({ type: EDiffType.add, oldTree: tree1, newTree: tree2 })
+    } else {
+      if (tree1.value !== tree2.value) {
+        res.push({ type: EDiffType.change, oldTree: tree1, newTree: tree2 })
+      }
+      res.push(...BinaryTree.diff(tree1.left, tree2.left), ...BinaryTree.diff(tree1.right, tree2.right))
+    }
+    return res
+  }
+  /**
+   * 二叉搜索树
+   * @param arr
+   * @returns
+   */
+  static generateSearchTree<T>(arr: Array<T>) {
+    const root = new BinaryTree(arr[0])
+    const traversalArr = <T>(arr: T[], index: number, callback: (p: T) => void) => {
+      if (arr.length > index) {
+        callback(arr[index])
+        traversalArr(arr, index + 1, callback)
+      }
+    }
+    traversalArr(arr, 0, (x) => BinaryTree.addSearchTree(x, root))
+    return root
+  }
+
+  private static addSearchTree<T>(node: T, root: IBinaryTree<T>) {
+    if (!root) return
+    if (root.value < node) {
+      if (!root.right) root.right = new BinaryTree(node)
+      else BinaryTree.addSearchTree(node, root.right)
+    } else if (root.value > node) {
+      if (root.left) BinaryTree.addSearchTree(node, root.left)
+      else root.left = new BinaryTree(node)
+    }
+  }
+
+  static searchSearchTree<T>(tree: IBinaryTree<T>, target: T, res = { res: false, count: 0 }) {
+    if (!tree || !target) return res
+    if (tree.value === target) {
+      res.res = true
+    } else {
+      res.count++
+      if (target > tree.value) {
+        return BinaryTree.searchSearchTree(tree.right, target, res)
+      } else {
+        return BinaryTree.searchSearchTree(tree.left, target, res)
+      }
+    }
+    return res
   }
 }
 
@@ -182,8 +224,6 @@ c1.right = g1
 // b1.left = d1
 b1.right = e1
 
-
-
 const preorderRes = []
 const inorderRes = []
 const postorderRes = []
@@ -197,6 +237,34 @@ const postorderRes = []
 // console.log(BinaryTree.recoverTreeByPostorderTraversal(postorderRes, inorderRes))
 // console.log(BinaryTree.depthFirstSearch(a, g))
 // console.log(BinaryTree.breadthFirstSearch([a], g))
-console.log(BinaryTree.diff(a,a1));
+// console.log(BinaryTree.diff(a,a1));
+function generateArr(length: number) {
+  const res = new Array<number>(length).fill(0)
+  res.forEach((x, i, a) => {
+    a[i] = Math.round(Math.random() * 1000)
+  })
+  return res
+}
+function searchArr(arr, target) {
+  const res = {
+    res: false,
+    count: 0,
+  }
+  let i = 0
+  for (; i < arr.length; i++) {
+    if (arr[i] === target) {
+      res.res = true
+      res.count = i
+      return res
+    }
+  }
+  res.count = i
+  return res
+}
+
+const arr = generateArr(1000)
+const searchTree = BinaryTree.generateSearchTree(arr)
+
+console.log(searchArr(arr, 800), BinaryTree.searchSearchTree(searchTree, 800))
 
 export {}
