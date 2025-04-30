@@ -1,5 +1,1 @@
-# 数据结构和算法学习记录
-
-## 一维数据
-
-## 二维数据
+-[记录](./DataStructureAndAlgorithms.md)
