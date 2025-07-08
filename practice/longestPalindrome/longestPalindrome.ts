@@ -50,8 +50,16 @@ console.log(longestPalindrome("eabcb"))
 const { isPalindrome } = createPalindromeHasher("#e#a#b#c#b")
 console.log(isPalindrome(5, 9))
 
+//用固定滑块去找，找到就放大，找不到用二分法缩小
 function creategetKth(isPalindrome: (l: number, r: number) => boolean) {
-  function getMaxKth(s: string, k: number = s.length, [x, y]: [number, number] = [0, k]): Array<{ k: number; value: string }> {
+  /**
+   *
+   * @param s
+   * @param k 滑块的大小
+   * @param  k的范围
+   * @returns
+   */
+  function getMaxKth(s: string, k: number = s.length, [/**k的下界*/ x, /**k的上界*/ y]: [number, number] = [0, k]): Array<{ k: number; value: string }> {
     if (k < 5 || x >= y || k > y) return []
     let left = 0,
       right = left + k - 1
