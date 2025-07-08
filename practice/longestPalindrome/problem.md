@@ -1,1 +1,1 @@
-![Promblem][./image.png]
+![Problem](./image.png)
