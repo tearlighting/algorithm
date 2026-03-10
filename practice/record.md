@@ -77,7 +77,8 @@ function myBinarySearch() {
   let right = arr.length - 1
   //左闭右开指的是右侧不可达，就是不可能交叉，最后的状态就是重叠，返回谁都可以
   while (left < right) {
-    //这里有时需要+1使之往后偏移1，防止死循环。但是这边left+1不存在这个问题
+    //这里有时需要+1使之往后偏移1，防止死循环。
+    //首先，你需要明确向下取整默认是偏左的，所以你保留了right,mid还是会左偏，不会死循环
     const mid = Math.floor((left + right) / 2)
     console.log(left, right, arr[mid], mid)
     if (arr[mid] >= 2) {
@@ -97,7 +98,8 @@ function myBinarySearch() {
   //最后小于1的数
   while (left < right) {
     console.log(left, right)
-    //这里需要加1避免动不了死循环,否则你想像一下left=0,right=1,那么mid=0就死循环了.只和left有关
+    //这里需要加1避免动不了死循环,否则你想像一下left=0,right=1,那么mid=0就死循环了
+    //因为你保留了left，你还左偏，这肯定是会炸的，必须+1让mid右偏
     const mid = Math.floor((left + right + 1) / 2)
     if (arr[mid] < 1) {
       //我不知道是不是最后一个，不能现在直接跨

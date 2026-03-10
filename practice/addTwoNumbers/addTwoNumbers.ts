@@ -1,6 +1,6 @@
 class ListNode {
-  next: ListNode | null
-  constructor(public val: number) {}
+  next: ListNode | null = null
+  constructor(public val: number) { }
 }
 function addTwoNumbers(l1: ListNode | null, l2: ListNode | null): ListNode | null {
   if (l1 && !l2) return l1
@@ -11,8 +11,11 @@ function addTwoNumbers(l1: ListNode | null, l2: ListNode | null): ListNode | nul
 
 function addTwoListWithCarry(l1: ListNode | null, l2: ListNode | null, carry = 0): ListNode | null {
   if (!l1 && !l2 && carry === 0) return null
+  //计算sum
   const sum = (l1?.val || 0) + (l2?.val || 0) + carry
+  //计算当前node
   const node = new ListNode(sum % 10)
+  //计算进位
   carry = Math.floor(sum / 10)
   //深度优先
   node.next = addTwoListWithCarry(l1?.next || null, l2?.next || null, carry)
