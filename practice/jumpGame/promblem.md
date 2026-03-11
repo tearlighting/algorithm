@@ -9,3 +9,9 @@
 2. 贪心
 
 我不想知道具体你走怎么跳的，我也不知道最优解，我只是想知道你**能不能**跳到终点,这是一个**可达性问题**
+
+```ts
+let reachable = Math.max(reachable, index + nums[index])
+if (index > reachable) return false
+if (reachable >= nums.length - 1) return true
+```
