@@ -1,4 +1,4 @@
-//堆
+//堆,只是保证了根节点和子节点的大小关系，不在意左右子节点的大小关系
 interface IHeap<T> {
   size: number
   peek: T | undefined
@@ -14,10 +14,17 @@ interface IInjectable<T> {
 
 export class Heap<T> implements IHeap<T>, IInjectable<T> {
   protected _heap: T[] = []
-  constructor(private _compare: (a: T, b: T) => boolean) {}
+  constructor(private _compare: (a: T, b: T) => boolean) { }
+  //问，构建这个heap的复杂度是多少？
+  //你就这个算法来说，看上去是n/2 * log(n/2) = nlog(n)
+  //但是，你仔细想想，只有root最坏情况下才是logn,越往下越少
+  //我就不跟你说什么Σ什么的了，毕竟我高数也忘了。
+  //也就是说，比O(nlogn)要少，是O(n)
   injectHeap(payload: T[]): void {
     this._heap = payload
     //只需要操作一半即可
+    //什么你问为啥？
+    //因为有一半是叶子节点，叶子节点没有子节点，不需要下沉操作
     for (let i = Math.floor(this._heap.length / 2); i >= 0; i--) {
       Heap.sinkDown(this._heap, this._compare, i)
     }
@@ -50,6 +57,13 @@ export class Heap<T> implements IHeap<T>, IInjectable<T> {
 function swap<T>(heap: T[], i: number, j: number): void {
   ;[heap[i], heap[j]] = [heap[j], heap[i]]
 }
+/**
+ * 单个节点下沉，最大复杂度是O(logn)
+ * @param heap 
+ * @param compare 
+ * @param index 
+ * @returns 
+ */
 function sinkDownDfs<T>(heap: T[], compare: (a: T, b: T) => boolean, index: number = 0): void {
   if (index > heap.length - 1 || index < 0) return
   let left = 2 * index + 1
