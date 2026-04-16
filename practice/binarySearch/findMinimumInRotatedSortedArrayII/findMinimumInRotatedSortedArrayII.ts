@@ -8,9 +8,11 @@ export const findMin = (nums: number[]): number => {
         //旋转点在右边
         if (nums[mid] > nums[right]) {
             left = mid + 1
-        } else {
+        } else if (nums[mid] < nums[right]) {
             //旋转点在左边
             right = mid
+        } else {
+            right--
         }
     }
     return nums[left]
